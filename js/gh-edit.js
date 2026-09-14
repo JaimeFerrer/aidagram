@@ -4,7 +4,7 @@
 // módulo, y comparten la misma clave de acceso guardada en localStorage.
 const GH = (function () {
   const OWNER = "jaimeferrer";
-  const REPO = "albumaida";
+  const REPO = "aidagram";
   const BRANCH = "main";
   const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
