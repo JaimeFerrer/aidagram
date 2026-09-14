@@ -24,6 +24,26 @@
     background: var(--card-bg);
   }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .new-tag-row { display: flex; gap: 8px; margin-top: 10px; }
+  .new-tag-row input[type="text"] {
+    flex: 1;
+    font-family: "Patrick Hand", sans-serif;
+    font-size: 0.95rem;
+    padding: 6px 10px;
+    border: 2px dashed var(--ink);
+    border-radius: 6px;
+    background: var(--card-bg);
+  }
+  .new-tag-row button {
+    font-family: "Patrick Hand", sans-serif;
+    font-size: 0.95rem;
+    border: 2px solid var(--ink);
+    background: var(--card-bg);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
   .chip {
     border: 2px solid var(--ink);
     border-radius: 999px;
@@ -122,6 +142,10 @@
   <div class="field">
     <label>¿Con quién sale? (opcional, puedes marcar varias)</label>
     <div class="chips" id="chips"></div>
+    <div class="new-tag-row">
+      <input type="text" id="newTagInput" maxlength="30" placeholder="¿Falta alguien? Escribe una etiqueta nueva">
+      <button type="button" id="newTagBtn">＋ Crear</button>
+    </div>
   </div>
 
   <div class="field">
@@ -165,9 +189,14 @@
   const manageSection = document.getElementById("manageSection");
   const manageGrid = document.getElementById("manageGrid");
   const manageStatus = document.getElementById("manageStatus");
+  const newTagInput = document.getElementById("newTagInput");
+  const newTagBtn = document.getElementById("newTagBtn");
 
   let selectedFile = null;
   const selectedCategories = new Set();
+  // Etiquetas creadas aquí mismo que todavía no existen en data.js y hay
+  // que registrar en CATEGORY_LABELS la próxima vez que se suba una foto.
+  const pendingNewLabels = {};
 
   function getToken(forcePrompt) {
     let token = localStorage.getItem("aida_gh_token");
@@ -193,16 +222,54 @@
 
   // Las categorías (CATEGORY_LABELS) llegan ya cargadas desde js/data.js,
   // así este formulario nunca se desincroniza de las etiquetas existentes.
-  Object.keys(CATEGORY_LABELS).forEach((key) => {
+  function addChip(key, label, selected) {
     const chip = document.createElement("div");
-    chip.className = "chip";
-    chip.textContent = CATEGORY_LABELS[key];
+    chip.className = "chip" + (selected ? " selected" : "");
+    chip.textContent = label;
     chip.addEventListener("click", () => {
       chip.classList.toggle("selected");
       if (chip.classList.contains("selected")) selectedCategories.add(key);
       else selectedCategories.delete(key);
     });
     chipsEl.appendChild(chip);
+    if (selected) selectedCategories.add(key);
+    return chip;
+  }
+
+  Object.keys(CATEGORY_LABELS).forEach((key) => addChip(key, CATEGORY_LABELS[key], false));
+
+  // Convierte un texto libre ("Con la abuela") en una clave válida para
+  // usar como categoría ("conlaabuela"), sin acentos ni espacios, y sin
+  // chocar con una etiqueta que ya exista.
+  function slugify(label) {
+    let base = label
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");
+    if (!base) base = "etiqueta";
+    let key = base;
+    let i = 2;
+    while (CATEGORY_LABELS[key]) key = base + i++;
+    return key;
+  }
+
+  function createNewTag() {
+    const label = newTagInput.value.trim();
+    if (!label) return;
+    const key = slugify(label);
+    CATEGORY_LABELS[key] = label; // así el resto de la página ya la ve como existente
+    pendingNewLabels[key] = label;
+    addChip(key, label, true);
+    newTagInput.value = "";
+  }
+
+  newTagBtn.addEventListener("click", createNewTag);
+  newTagInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      createNewTag();
+    }
   });
 
   function setStatus(msg, kind) {
@@ -328,13 +395,23 @@
     }
   }
 
-  function addEntryToDataJs(filename, categories, caption) {
+  function addEntryToDataJs(filename, categories, caption, newLabels) {
     const catsJs = "[" + categories.map((c) => `"${c}"`).join(", ") + "]";
     const safeCaption = caption.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const line = `  { file: "${filename}", categories: ${catsJs}, caption: "${safeCaption}" },\n];`;
+    const photoLine = `  { file: "${filename}", categories: ${catsJs}, caption: "${safeCaption}" },\n];`;
+    const labelEntries = Object.keys(newLabels || {});
     return editDataJs((text) => {
-      const updated = text.replace(/\n\];/, "\n" + line);
+      let updated = text.replace(/\n\];/, "\n" + photoLine);
       if (updated === text) throw new Error("No se pudo editar data.js (formato inesperado).");
+
+      if (labelEntries.length) {
+        const labelLines = labelEntries
+          .map((key) => `  ${key}: "${newLabels[key].replace(/\\/g, "\\\\").replace(/"/g, '\\"')}",\n`)
+          .join("");
+        const before = updated;
+        updated = updated.replace(/(CATEGORY_LABELS\s*=\s*\{[\s\S]*?)\n\};/, `$1\n${labelLines}};`);
+        if (updated === before) throw new Error("No se pudieron registrar las etiquetas nuevas.");
+      }
       return updated;
     });
   }
@@ -370,7 +447,8 @@
       const filename = await uploadImageFile(base64, ext);
 
       setStatus("Añadiéndola al álbum…");
-      await addEntryToDataJs(filename, [...selectedCategories], captionEl.value.trim());
+      await addEntryToDataJs(filename, [...selectedCategories], captionEl.value.trim(), pendingNewLabels);
+      Object.keys(pendingNewLabels).forEach((k) => delete pendingNewLabels[k]);
 
       setStatus("¡Foto añadida! Ya está en el álbum (puede tardar un minuto en aparecer).", "ok");
       fileInput.value = "";
