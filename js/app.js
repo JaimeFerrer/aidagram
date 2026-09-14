@@ -25,7 +25,10 @@
   }
 
   function labelFor(category) {
-    return (window.CATEGORY_LABELS && CATEGORY_LABELS[category]) || category;
+    // Ojo: CATEGORY_LABELS se declara con `const` en data.js, así que NO
+    // cuelga de `window` (a diferencia de `var`). Hay que referenciarla
+    // directamente; por eso antes siempre se caía a la clave en bruto.
+    return (typeof CATEGORY_LABELS !== "undefined" && CATEGORY_LABELS[category]) || category;
   }
 
   function buildFilters() {
