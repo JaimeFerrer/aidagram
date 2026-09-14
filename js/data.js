@@ -88,7 +88,7 @@ const CATEGORY_LABELS = {
   amigos: "Amigos",
   cole: "Cole",
   tia: "Con la tía",
-  moni: "Con Moñi",
+  moni: "Con Aída",
   guelos: "Con los güelos",
   jametes: "Con Jametes",
   adri: "Con Adri",
