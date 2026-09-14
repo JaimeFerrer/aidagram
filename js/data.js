@@ -78,6 +78,21 @@ const PHOTOS = [
   { file: "images/aida-67.jpeg", categories: ["moni"], caption: "" },
   { file: "images/aida-68.jpg", categories: ["moni"], caption: "" },
   { file: "images/aida-69.jpg", categories: ["mama", "jametes"], caption: "" },
+
+  // --- Tanda de Adri ---
+  { file: "images/aida-70.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-71.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-72.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-73.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-74.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-75.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-76.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-77.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-78.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-79.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-80.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-81.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-82.jpg", categories: ["adri"], caption: "" },
 ];
 
 // Nombres bonitos para mostrar en los botones de filtro.
