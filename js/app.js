@@ -9,6 +9,14 @@
 
   let activeFilter = "all";
 
+  const ROTATIONS = [-4, -2.5, -1, 1.5, 3, 4.5, -3.5, 2, -1.5, 0.5];
+  const TAPE_COLORS = ["#c96a4d", "#8a9a63", "#d1a53d", "#7d8fa6"];
+  const TAPE_ANGLES = [-6, -3, 2, 5, -4, 4];
+
+  function pick(arr, i) {
+    return arr[i % arr.length];
+  }
+
   function labelFor(category) {
     return (window.CATEGORY_LABELS && CATEGORY_LABELS[category]) || category;
   }
@@ -46,16 +54,20 @@
       (p) => activeFilter === "all" || (p.categories || []).includes(activeFilter)
     );
 
-    items.forEach((photo) => {
-      const tile = document.createElement("div");
-      tile.className = "photo-tile";
+    items.forEach((photo, i) => {
+      const card = document.createElement("div");
+      card.className = "photo-card";
+      card.style.setProperty("--rot", `${pick(ROTATIONS, i)}deg`);
+      card.style.setProperty("--tape-angle", `${pick(TAPE_ANGLES, i + 2)}deg`);
+      card.style.setProperty("--tape-color", pick(TAPE_COLORS, i));
+
       const img = document.createElement("img");
       img.src = photo.file;
       img.alt = photo.caption || "";
       img.loading = "lazy";
-      tile.appendChild(img);
-      tile.addEventListener("click", () => openLightbox(photo));
-      grid.appendChild(tile);
+      card.appendChild(img);
+      card.addEventListener("click", () => openLightbox(photo));
+      grid.appendChild(card);
     });
 
     emptyState.hidden = PHOTOS.length > 0;
