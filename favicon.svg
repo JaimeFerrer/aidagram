@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <clipPath id="bandClip">
+      <path d="M28,2 H94 A26,26 0 0 1 118,26 V38 H2 V26 A26,26 0 0 1 28,2 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- cuerpo -->
+  <rect x="2" y="2" width="116" height="116" rx="26" fill="#fff8ef" stroke="#4a2f1c" stroke-width="4" />
+
+  <!-- banda superior -->
+  <path d="M28,2 H94 A26,26 0 0 1 118,26 V38 H2 V26 A26,26 0 0 1 28,2 Z" fill="#4a2f1c" />
+
+  <!-- rayas diagonales con la paleta del álbum -->
+  <g clip-path="url(#bandClip)">
+    <rect x="4" y="-6" width="14" height="52" fill="#c96a4d" transform="rotate(24 10 20)" />
+    <rect x="20" y="-6" width="14" height="52" fill="#d1a53d" transform="rotate(24 26 20)" />
+    <rect x="36" y="-6" width="14" height="52" fill="#8a9a63" transform="rotate(24 42 20)" />
+    <rect x="52" y="-6" width="14" height="52" fill="#7d8fa6" transform="rotate(24 58 20)" />
+  </g>
+
+  <!-- objetivo -->
+  <circle cx="60" cy="80" r="38" fill="#fff8ef" stroke="#4a2f1c" stroke-width="4" />
+  <circle cx="60" cy="80" r="31" fill="#c96a4d" />
+  <circle cx="60" cy="80" r="22" fill="#7d8fa6" />
+  <circle cx="60" cy="80" r="13" fill="#2f2016" />
+  <!-- monograma en el centro, bien legible a tamaño pequeño -->
+  <text x="60" y="87" font-family="Arial, sans-serif" font-weight="700" font-size="20" fill="#fff8ef" text-anchor="middle">A</text>
+</svg>
