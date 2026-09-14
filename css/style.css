@@ -47,7 +47,26 @@ body {
   text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
 }
 
-/* Guiño al logo cursivo de Instagram de sus primeros años */
+.cover-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.insta-badge {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25));
+}
+@media (min-width: 480px) {
+  .insta-badge { width: 72px; height: 72px; }
+}
+
+/* Guiño al logo cursivo de Instagram de sus primeros años, con la
+   inicial de Aída como monograma personalizado */
 .cover h1.insta-title {
   font-family: "Grand Hotel", cursive;
   font-weight: 400;

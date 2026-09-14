@@ -12,7 +12,47 @@
 <body>
 
 <header class="cover">
-  <h1 class="insta-title">Aídagram</h1>
+  <div class="cover-brand">
+    <svg class="insta-badge" viewBox="0 0 120 120" role="img" aria-label="Cámara retro con la inicial de Aída">
+      <defs>
+        <clipPath id="bandClip">
+          <path d="M28,2 H94 A26,26 0 0 1 118,26 V38 H2 V26 A26,26 0 0 1 28,2 Z" />
+        </clipPath>
+      </defs>
+
+      <!-- cuerpo -->
+      <rect x="2" y="2" width="116" height="116" rx="26" fill="#fff8ef" stroke="#4a2f1c" stroke-width="3" />
+
+      <!-- banda superior -->
+      <path d="M28,2 H94 A26,26 0 0 1 118,26 V38 H2 V26 A26,26 0 0 1 28,2 Z" fill="#4a2f1c" />
+
+      <!-- rayas diagonales con la paleta del álbum -->
+      <g clip-path="url(#bandClip)">
+        <rect x="4" y="-6" width="11" height="52" fill="#c96a4d" transform="rotate(24 10 20)" />
+        <rect x="16" y="-6" width="11" height="52" fill="#d1a53d" transform="rotate(24 22 20)" />
+        <rect x="28" y="-6" width="11" height="52" fill="#8a9a63" transform="rotate(24 34 20)" />
+        <rect x="40" y="-6" width="11" height="52" fill="#7d8fa6" transform="rotate(24 46 20)" />
+      </g>
+
+      <!-- mini cámara frontal -->
+      <rect x="86" y="10" width="20" height="20" rx="6" fill="#2f2016" />
+      <circle cx="96" cy="20" r="5" fill="#8a9aab" />
+
+      <!-- cinta con su nombre, en vez de "Insta" -->
+      <rect x="12" y="27" width="50" height="18" rx="4" fill="#2f2016" />
+      <text x="37" y="40.5" font-family="'Grand Hotel', cursive" font-size="15" fill="#fff8ef" text-anchor="middle">Aída</text>
+
+      <!-- objetivo -->
+      <circle cx="60" cy="79" r="35" fill="#fff8ef" stroke="#4a2f1c" stroke-width="3" />
+      <circle cx="60" cy="79" r="28" fill="#c96a4d" />
+      <circle cx="60" cy="79" r="20" fill="#7d8fa6" />
+      <circle cx="60" cy="79" r="12" fill="#2f2016" />
+      <ellipse cx="51" cy="69" rx="8" ry="5" fill="#fff8ef" opacity="0.45" />
+      <!-- monograma en el centro, en vez del punto genérico -->
+      <text x="60" y="85" font-family="'Grand Hotel', cursive" font-size="18" fill="#fff8ef" text-anchor="middle">A</text>
+    </svg>
+    <h1 class="insta-title">Aídagram</h1>
+  </div>
 </header>
 
 <div class="corkboard">
