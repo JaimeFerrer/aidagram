@@ -12,12 +12,42 @@
 // (por ejemplo: "papa", "mama", "conmigo", "amigos", "familia", "cole"...).
 
 const PHOTOS = [
-  // Ejemplo (bórralo o edítalo cuando tengas fotos reales):
-  // {
-  //   file: "images/foto01.jpg",
-  //   categories: ["mama", "conmigo"],
-  //   caption: "Verano en la playa, 2010"
-  // },
+  // --- Primera tanda ---
+  { file: "images/aida-06.png", categories: [], caption: "" },
+  { file: "images/aida-07.png", categories: [], caption: "" },
+  { file: "images/aida-08.png", categories: [], caption: "" },
+  { file: "images/aida-09.png", categories: [], caption: "" },
+  { file: "images/aida-10.png", categories: [], caption: "" },
+  { file: "images/aida-11.png", categories: [], caption: "" },
+  { file: "images/aida-12.png", categories: [], caption: "" },
+  { file: "images/aida-13.png", categories: [], caption: "" },
+  { file: "images/aida-14.png", categories: [], caption: "" },
+  { file: "images/aida-15.png", categories: [], caption: "" },
+  { file: "images/aida-16.png", categories: [], caption: "" },
+  { file: "images/aida-17.png", categories: [], caption: "" },
+  { file: "images/aida-18.png", categories: [], caption: "" },
+  { file: "images/aida-19.png", categories: [], caption: "" },
+  { file: "images/aida-20.png", categories: [], caption: "" },
+  { file: "images/aida-21.png", categories: [], caption: "" },
+  { file: "images/aida-22.png", categories: [], caption: "" },
+  { file: "images/aida-23.png", categories: [], caption: "" },
+  { file: "images/aida-24.png", categories: [], caption: "" },
+  { file: "images/aida-25.png", categories: [], caption: "" },
+  { file: "images/aida-26.png", categories: [], caption: "" },
+  { file: "images/aida-27.png", categories: [], caption: "" },
+  { file: "images/aida-28.png", categories: [], caption: "" },
+  { file: "images/aida-29.png", categories: [], caption: "" },
+  { file: "images/aida-30.png", categories: [], caption: "" },
+  { file: "images/aida-31.png", categories: [], caption: "" },
+  { file: "images/aida-32.png", categories: [], caption: "" },
+  { file: "images/aida-33.png", categories: [], caption: "" },
+  { file: "images/aida-34.png", categories: [], caption: "" },
+  { file: "images/aida-35.png", categories: [], caption: "" },
+  { file: "images/aida-36.png", categories: [], caption: "" },
+  { file: "images/aida-37.png", categories: [], caption: "" },
+  { file: "images/aida-38.png", categories: [], caption: "" },
+  { file: "images/aida-39.png", categories: [], caption: "" },
+  { file: "images/aida-40.png", categories: [], caption: "" },
 ];
 
 // Nombres bonitos para mostrar en los botones de filtro.
