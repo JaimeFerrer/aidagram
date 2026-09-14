@@ -99,15 +99,15 @@ const PHOTOS = [
 // Nombres bonitos para mostrar en los botones de filtro.
 // Si añades una categoría que no está aquí, se mostrará tal cual.
 const CATEGORY_LABELS = {
-  papa: "Con papá",
-  mama: "Con mamá",
+  papa: "Papá",
+  mama: "Mamá",
   conmigo: "Conmigo",
   familia: "Familia",
   amigos: "Amigos",
   cole: "Cole",
-  tia: "Con tía",
+  tia: "Tía",
   moni: "Moñi",
-  guelos: "Con los güelos",
-  jametes: "Con Jametes",
-  adri: "Con Adri",
+  guelos: "Güelos",
+  jametes: "Jametes",
+  adri: "Adri",
 };
