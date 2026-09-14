@@ -58,9 +58,10 @@ body {
 
 .subtitle {
   text-align: center;
-  margin: 20px 0 0;
+  margin: 20px 0 28px;
   color: var(--muted);
   font-size: 1.15rem;
+  line-height: 1.5;
 }
 
 /* ---------- Filtros (etiquetas de papel) ---------- */
