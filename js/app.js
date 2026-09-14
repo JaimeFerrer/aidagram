@@ -2,10 +2,6 @@
   const grid = document.getElementById("grid");
   const filtersEl = document.getElementById("filters");
   const emptyState = document.getElementById("emptyState");
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightboxImg");
-  const lightboxCaption = document.getElementById("lightboxCaption");
-  const lightboxClose = document.getElementById("lightboxClose");
 
   let activeFilter = "all";
 
@@ -55,44 +51,29 @@
     );
 
     items.forEach((photo, i) => {
-      const card = document.createElement("div");
-      card.className = "photo-card";
-      card.style.setProperty("--rot", `${pick(ROTATIONS, i)}deg`);
-      card.style.setProperty("--tape-angle", `${pick(TAPE_ANGLES, i + 2)}deg`);
-      card.style.setProperty("--tape-color", pick(TAPE_COLORS, i));
+      // Al hacer clic, la foto se abre a tamaño completo en una pestaña
+      // nueva (sin overlays ni ventanas emergentes en la propia página).
+      const link = document.createElement("a");
+      link.className = "photo-card";
+      link.href = photo.file;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.title = photo.caption || "";
+      link.style.setProperty("--rot", `${pick(ROTATIONS, i)}deg`);
+      link.style.setProperty("--tape-angle", `${pick(TAPE_ANGLES, i + 2)}deg`);
+      link.style.setProperty("--tape-color", pick(TAPE_COLORS, i));
 
       const img = document.createElement("img");
       img.src = photo.file;
       img.alt = photo.caption || "";
       img.loading = "lazy";
-      card.appendChild(img);
-      card.addEventListener("click", () => openLightbox(photo));
-      grid.appendChild(card);
+      link.appendChild(img);
+      grid.appendChild(link);
     });
 
     emptyState.hidden = PHOTOS.length > 0;
     grid.hidden = PHOTOS.length === 0;
   }
-
-  function openLightbox(photo) {
-    lightboxImg.src = photo.file;
-    lightboxImg.alt = photo.caption || "";
-    lightboxCaption.textContent = photo.caption || "";
-    lightbox.hidden = false;
-  }
-
-  function closeLightbox() {
-    lightbox.hidden = true;
-    lightboxImg.src = "";
-  }
-
-  lightboxClose.addEventListener("click", closeLightbox);
-  lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeLightbox();
-  });
 
   buildFilters();
   renderGrid();
