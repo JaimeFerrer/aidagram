@@ -76,6 +76,7 @@ const PHOTOS = [
   { file: "images/aida-65.jpeg", categories: ["moni"], caption: "" },
   { file: "images/aida-66.jpeg", categories: ["mama"], caption: "" },
   { file: "images/aida-67.jpeg", categories: ["moni"], caption: "" },
+  { file: "images/aida-68.jpg", categories: ["moni"], caption: "" },
 ];
 
 // Nombres bonitos para mostrar en los botones de filtro.
