@@ -44,6 +44,15 @@ body {
   color: var(--ink);
   text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
 }
+
+/* Guiño al logo cursivo de Instagram de sus primeros años */
+.cover h1.insta-title {
+  font-family: "Grand Hotel", cursive;
+  font-weight: 400;
+  font-size: clamp(3.2rem, 9vw, 5.2rem);
+  color: #4a2f1c;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+}
 .cover .subtitle {
   margin: 0;
   color: var(--muted);
