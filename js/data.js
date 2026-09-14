@@ -125,10 +125,6 @@ const PHOTOS = [
 const CATEGORY_LABELS = {
   papa: "Papá",
   mama: "Mamá",
-  conmigo: "Conmigo",
-  familia: "Familia",
-  amigos: "Amigos",
-  cole: "Cole",
   tia: "Tía",
   moni: "Moñi",
   guelos: "Güelos",
