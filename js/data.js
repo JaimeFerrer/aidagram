@@ -13,14 +13,14 @@
 
 const PHOTOS = [
   // --- Primera tanda ---
-  { file: "images/aida-06.png", categories: [], caption: "" },
-  { file: "images/aida-07.png", categories: [], caption: "" },
-  { file: "images/aida-08.png", categories: [], caption: "" },
-  { file: "images/aida-09.png", categories: [], caption: "" },
-  { file: "images/aida-10.png", categories: [], caption: "" },
-  { file: "images/aida-11.png", categories: [], caption: "" },
-  { file: "images/aida-12.png", categories: [], caption: "" },
-  { file: "images/aida-13.png", categories: [], caption: "" },
+  { file: "images/aida-06.png", categories: ["papa", "mama"], caption: "" },
+  { file: "images/aida-07.png", categories: ["papa"], caption: "" },
+  { file: "images/aida-08.png", categories: ["tios"], caption: "" },
+  { file: "images/aida-09.png", categories: ["mama"], caption: "" },
+  { file: "images/aida-10.png", categories: ["moni"], caption: "" },
+  { file: "images/aida-11.png", categories: ["moni"], caption: "" },
+  { file: "images/aida-12.png", categories: ["moni"], caption: "" },
+  { file: "images/aida-13.png", categories: ["moni"], caption: "" },
   { file: "images/aida-14.png", categories: [], caption: "" },
   { file: "images/aida-15.png", categories: [], caption: "" },
   { file: "images/aida-16.png", categories: [], caption: "" },
@@ -87,4 +87,6 @@ const CATEGORY_LABELS = {
   familia: "Familia",
   amigos: "Amigos",
   cole: "Cole",
+  tios: "Con los tíos",
+  moni: "Con Moñi",
 };
