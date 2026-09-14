@@ -48,21 +48,21 @@ body {
 }
 
 .cover-brand {
+  /* Misma medida fluida que usa el título, así el icono siempre tiene
+     su misma altura en vez de saltar entre tamaños fijos por breakpoint. */
+  --title-size: clamp(3.2rem, 9vw, 5.2rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 0.15em;
   flex-wrap: wrap;
 }
 
 .insta-badge {
-  width: 56px;
-  height: 56px;
+  width: var(--title-size);
+  height: var(--title-size);
   flex-shrink: 0;
   filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25));
-}
-@media (min-width: 480px) {
-  .insta-badge { width: 72px; height: 72px; }
 }
 
 /* Guiño al logo cursivo de Instagram de sus primeros años, con la
@@ -70,7 +70,7 @@ body {
 .cover h1.insta-title {
   font-family: "Grand Hotel", cursive;
   font-weight: 400;
-  font-size: clamp(3.2rem, 9vw, 5.2rem);
+  font-size: var(--title-size);
   color: #fff8ef;
   text-shadow: 1px 2px 3px rgba(60, 35, 10, 0.35);
 }
