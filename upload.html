@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
 <style>
-  .upload-wrap { max-width: 480px; margin: 0 auto; padding: 24px 16px 60px; }
+  .upload-wrap { max-width: 560px; margin: 0 auto; padding: 24px 16px 60px; }
   .upload-wrap h1 { font-family: "Caveat", cursive; font-size: 2.4rem; text-align: center; margin-bottom: 4px; }
   .upload-wrap p.lead { text-align: center; color: var(--muted); margin-top: 0; }
   .field { margin-bottom: 18px; }
@@ -70,6 +70,41 @@
   .status.error { color: #a33322; }
   .status.ok { color: #4a7a3a; }
   a.back { display: block; text-align: center; margin-top: 24px; color: var(--ink); }
+
+  .divider { border: none; border-top: 2px dashed var(--border, #ddccA6); margin: 36px 0 24px; }
+
+  .manage-toggle { text-align: center; }
+
+  .manage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .manage-item { position: relative; }
+  .manage-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border: 2px solid var(--ink);
+    display: block;
+  }
+  .manage-item button {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #a33322;
+    color: #fff;
+    border: 2px solid var(--card-bg);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .manage-item button:disabled { opacity: .5; }
+  .manage-empty { text-align: center; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -79,8 +114,8 @@
   <p class="lead">Se sube directamente al álbum de Aída</p>
 
   <div class="field">
-    <label for="fileInput">Elige o haz una foto</label>
-    <input type="file" id="fileInput" accept="image/*" capture="environment">
+    <label for="fileInput">Elige una foto de tu galería (o haz una nueva)</label>
+    <input type="file" id="fileInput" accept="image/*">
     <img id="preview" class="preview" alt="">
   </div>
 
@@ -98,9 +133,20 @@
   <p class="status" id="status"></p>
   <p style="text-align:center;"><button class="btn-link" id="tokenBtn">Cambiar clave de acceso</button></p>
 
+  <hr class="divider">
+
+  <div class="manage-toggle">
+    <button class="btn-link" id="manageToggle">Ver y eliminar fotos del álbum</button>
+  </div>
+  <div id="manageSection" hidden>
+    <p class="status" id="manageStatus"></p>
+    <div class="manage-grid" id="manageGrid"></div>
+  </div>
+
   <a class="back" href="index.html">← Volver al álbum</a>
 </div>
 
+<script src="js/data.js?v=5"></script>
 <script>
 (function () {
   const OWNER = "jaimeferrer";
@@ -115,6 +161,10 @@
   const submitBtn = document.getElementById("submitBtn");
   const statusEl = document.getElementById("status");
   const tokenBtn = document.getElementById("tokenBtn");
+  const manageToggle = document.getElementById("manageToggle");
+  const manageSection = document.getElementById("manageSection");
+  const manageGrid = document.getElementById("manageGrid");
+  const manageStatus = document.getElementById("manageStatus");
 
   let selectedFile = null;
   const selectedCategories = new Set();
@@ -141,29 +191,19 @@
     preview.style.display = "block";
   });
 
-  // Carga las categorías existentes directamente desde data.js, así esta
-  // página nunca se desincroniza de las etiquetas que ya existen.
-  fetch("js/data.js?v=" + Date.now())
-    .then((r) => r.text())
-    .then((text) => {
-      const match = text.match(/CATEGORY_LABELS\s*=\s*\{([\s\S]*?)\};/);
-      if (!match) return;
-      const re = /(\w+)\s*:\s*"([^"]*)"/g;
-      let m;
-      while ((m = re.exec(match[1]))) {
-        const key = m[1];
-        const chip = document.createElement("div");
-        chip.className = "chip";
-        chip.textContent = m[2];
-        chip.addEventListener("click", () => {
-          chip.classList.toggle("selected");
-          if (chip.classList.contains("selected")) selectedCategories.add(key);
-          else selectedCategories.delete(key);
-        });
-        chipsEl.appendChild(chip);
-      }
-    })
-    .catch(() => {});
+  // Las categorías (CATEGORY_LABELS) llegan ya cargadas desde js/data.js,
+  // así este formulario nunca se desincroniza de las etiquetas existentes.
+  Object.keys(CATEGORY_LABELS).forEach((key) => {
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.textContent = CATEGORY_LABELS[key];
+    chip.addEventListener("click", () => {
+      chip.classList.toggle("selected");
+      if (chip.classList.contains("selected")) selectedCategories.add(key);
+      else selectedCategories.delete(key);
+    });
+    chipsEl.appendChild(chip);
+  });
 
   function setStatus(msg, kind) {
     statusEl.textContent = msg;
@@ -245,7 +285,8 @@
       }
       throw new Error(`GitHub respondió ${res.status}: ${body.slice(0, 200)}`);
     }
-    return res.json();
+    // DELETE responde 200 con cuerpo; devolvemos igualmente el JSON si lo hay.
+    return res.status === 204 ? null : res.json();
   }
 
   async function uploadImageFile(base64, ext) {
@@ -261,20 +302,19 @@
     return filename;
   }
 
-  async function addEntryToDataJs(filename, categories, caption) {
+  // Aplica `editFn` (texto actual -> texto nuevo) sobre js/data.js con
+  // reintentos, por si dos personas suben/borran una foto casi a la vez.
+  async function editDataJs(editFn) {
     for (let attempt = 0; attempt < 3; attempt++) {
       const current = await ghRequest(`/contents/js/data.js?ref=${BRANCH}`, { method: "GET" });
       const text = base64ToUtf8(current.content);
-      const catsJs = "[" + categories.map((c) => `"${c}"`).join(", ") + "]";
-      const safeCaption = caption.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-      const line = `  { file: "${filename}", categories: ${catsJs}, caption: "${safeCaption}" },\n];`;
-      const updated = text.replace(/\n\];/, "\n" + line);
-      if (updated === text) throw new Error("No se pudo editar data.js (formato inesperado).");
+      const updated = editFn(text);
+      if (updated === null) return; // editFn señaliza "nada que hacer"
       try {
         await ghRequest("/contents/js/data.js", {
           method: "PUT",
           body: JSON.stringify({
-            message: `Registra foto ${filename} en data.js`,
+            message: "Actualiza data.js",
             content: utf8ToBase64(updated),
             sha: current.sha,
             branch: BRANCH,
@@ -283,10 +323,31 @@
         return;
       } catch (err) {
         if (attempt === 2) throw err;
-        // Puede que otra persona haya subido una foto justo a la vez; reintenta.
         await new Promise((r) => setTimeout(r, 600));
       }
     }
+  }
+
+  function addEntryToDataJs(filename, categories, caption) {
+    const catsJs = "[" + categories.map((c) => `"${c}"`).join(", ") + "]";
+    const safeCaption = caption.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    const line = `  { file: "${filename}", categories: ${catsJs}, caption: "${safeCaption}" },\n];`;
+    return editDataJs((text) => {
+      const updated = text.replace(/\n\];/, "\n" + line);
+      if (updated === text) throw new Error("No se pudo editar data.js (formato inesperado).");
+      return updated;
+    });
+  }
+
+  function removeEntryFromDataJs(filename) {
+    // Cada foto ocupa una única línea (así las genera esta misma página y
+    // el resto del álbum), así que basta con quitar la línea que la cita.
+    const escaped = filename.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const lineRe = new RegExp(`^[ \\t]*\\{[^\\n]*file:\\s*"${escaped}"[^\\n]*\\},?\\n`, "m");
+    return editDataJs((text) => {
+      if (!lineRe.test(text)) return null;
+      return text.replace(lineRe, "");
+    });
   }
 
   submitBtn.addEventListener("click", async () => {
@@ -318,11 +379,89 @@
       captionEl.value = "";
       selectedCategories.clear();
       chipsEl.querySelectorAll(".chip.selected").forEach((c) => c.classList.remove("selected"));
+      if (!manageSection.hidden) renderManageGrid();
     } catch (err) {
       setStatus(err.message || "Algo ha fallado. Inténtalo otra vez.", "error");
     } finally {
       submitBtn.disabled = false;
     }
+  });
+
+  // ---------- Ver y eliminar fotos ----------
+
+  function renderManageGrid() {
+    manageGrid.innerHTML = "";
+    if (!PHOTOS.length) {
+      manageGrid.innerHTML = '<p class="manage-empty">No hay fotos todavía.</p>';
+      return;
+    }
+    PHOTOS.forEach((photo) => {
+      const item = document.createElement("div");
+      item.className = "manage-item";
+
+      const img = document.createElement("img");
+      img.src = photo.file;
+      img.alt = photo.caption || "";
+      img.loading = "lazy";
+
+      const del = document.createElement("button");
+      del.textContent = "✕";
+      del.title = "Eliminar esta foto";
+      del.addEventListener("click", () => deletePhoto(photo.file, item, del));
+
+      item.appendChild(img);
+      item.appendChild(del);
+      manageGrid.appendChild(item);
+    });
+  }
+
+  async function deletePhoto(filename, itemEl, btnEl) {
+    if (!getToken(false)) {
+      manageStatus.textContent = "Necesitas la clave de acceso para eliminar fotos.";
+      manageStatus.className = "status error";
+      return;
+    }
+    if (!confirm("¿Seguro que quieres eliminar esta foto del álbum? No se puede deshacer.")) return;
+
+    btnEl.disabled = true;
+    manageStatus.textContent = "Eliminando…";
+    manageStatus.className = "status";
+    try {
+      // 1) Quita primero la entrada de data.js, así la foto desaparece del
+      //    álbum aunque falle el segundo paso.
+      await removeEntryFromDataJs(filename);
+
+      // 2) Borra el archivo de la imagen (si esto falla, no pasa nada grave:
+      //    solo queda un archivo huérfano sin usar).
+      try {
+        const info = await ghRequest(`/contents/${filename}?ref=${BRANCH}`, { method: "GET" });
+        await ghRequest(`/contents/${filename}`, {
+          method: "DELETE",
+          body: JSON.stringify({
+            message: `Elimina foto: ${filename}`,
+            sha: info.sha,
+            branch: BRANCH,
+          }),
+        });
+      } catch (imgErr) {
+        console.warn("No se pudo borrar el archivo de imagen:", imgErr);
+      }
+
+      itemEl.remove();
+      manageStatus.textContent = "Foto eliminada del álbum.";
+      manageStatus.className = "status ok";
+    } catch (err) {
+      manageStatus.textContent = err.message || "No se ha podido eliminar la foto.";
+      manageStatus.className = "status error";
+      btnEl.disabled = false;
+    }
+  }
+
+  manageToggle.addEventListener("click", () => {
+    const show = manageSection.hidden;
+    manageSection.hidden = !show;
+    manageToggle.textContent = show ? "Ocultar fotos del álbum" : "Ver y eliminar fotos del álbum";
+    if (show) renderManageGrid();
   });
 })();
 </script>
