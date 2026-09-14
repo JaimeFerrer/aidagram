@@ -94,6 +94,11 @@ const PHOTOS = [
   { file: "images/aida-81.jpg", categories: ["adri"], caption: "" },
   { file: "images/aida-82.jpg", categories: ["adri"], caption: "" },
   { file: "images/aida-83.jpg", categories: ["papa"], caption: "" },
+  { file: "images/aida-84.jpg", categories: [], caption: "" },
+  { file: "images/aida-85.jpg", categories: [], caption: "" },
+  { file: "images/aida-86.jpg", categories: [], caption: "" },
+  { file: "images/aida-87.jpg", categories: [], caption: "" },
+  { file: "images/aida-88.jpg", categories: [], caption: "" },
 ];
 
 // Nombres bonitos para mostrar en los botones de filtro.
