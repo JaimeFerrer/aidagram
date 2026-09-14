@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Álbum de Aida</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <span class="logo">📷 Álbum de Aida</span>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Feliz cumpleaños, Aida 🎂💛</h1>
+  <p>Un recorrido por tus recuerdos, con la gente que más te quiere.</p>
+</section>
+
+<nav class="filters" id="filters">
+  <!-- Los botones de filtro se generan automáticamente desde data.js -->
+</nav>
+
+<main class="grid" id="grid">
+  <!-- Las fotos se generan automáticamente desde data.js -->
+</main>
+
+<p class="empty-state" id="emptyState" hidden>
+  Aún no hay fotos aquí. Añádelas en <code>images/</code> y regístralas en <code>js/data.js</code>.
+</p>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
+  <img id="lightboxImg" src="" alt="">
+  <p id="lightboxCaption"></p>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
