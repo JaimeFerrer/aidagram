@@ -170,14 +170,10 @@
   <a class="back" href="index.html">← Volver al álbum</a>
 </div>
 
-<script src="js/data.js?v=5"></script>
+<script src="js/data.js?v=6"></script>
+<script src="js/gh-edit.js?v=1"></script>
 <script>
 (function () {
-  const OWNER = "jaimeferrer";
-  const REPO = "albumaida";
-  const BRANCH = "main";
-  const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
-
   const fileInput = document.getElementById("fileInput");
   const preview = document.getElementById("preview");
   const chipsEl = document.getElementById("chips");
@@ -198,19 +194,7 @@
   // que registrar en CATEGORY_LABELS la próxima vez que se suba una foto.
   const pendingNewLabels = {};
 
-  function getToken(forcePrompt) {
-    let token = localStorage.getItem("aida_gh_token");
-    if (!token || forcePrompt) {
-      token = prompt(
-        "Pega aquí la clave de acceso de GitHub (se guarda solo en este dispositivo, nunca se sube al repositorio).\n\n" +
-        "¿No la tienes? Pídesela a Jaime."
-      );
-      if (token) localStorage.setItem("aida_gh_token", token.trim());
-    }
-    return token ? token.trim() : null;
-  }
-
-  tokenBtn.addEventListener("click", () => getToken(true));
+  tokenBtn.addEventListener("click", () => GH.getToken(true));
 
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
@@ -324,115 +308,12 @@
     });
   }
 
-  // Codifica/decodifica texto UTF-8 <-> base64 de forma segura (para
-  // poder editar data.js, que tiene tildes y eñes).
-  function utf8ToBase64(str) {
-    return btoa(unescape(encodeURIComponent(str)));
-  }
-  function base64ToUtf8(str) {
-    return decodeURIComponent(escape(atob(str)));
-  }
-
-  async function ghRequest(path, options) {
-    const token = getToken(false);
-    if (!token) throw new Error("Falta la clave de acceso.");
-    const res = await fetch(API + path, {
-      ...options,
-      headers: {
-        Authorization: "Bearer " + token,
-        Accept: "application/vnd.github+json",
-        ...((options && options.headers) || {}),
-      },
-    });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      if (res.status === 401) {
-        localStorage.removeItem("aida_gh_token");
-        throw new Error("Clave de acceso inválida o caducada. Vuelve a intentarlo.");
-      }
-      throw new Error(`GitHub respondió ${res.status}: ${body.slice(0, 200)}`);
-    }
-    // DELETE responde 200 con cuerpo; devolvemos igualmente el JSON si lo hay.
-    return res.status === 204 ? null : res.json();
-  }
-
-  async function uploadImageFile(base64, ext) {
-    const filename = `images/upload-${Date.now()}.${ext}`;
-    await ghRequest(`/contents/${filename}`, {
-      method: "PUT",
-      body: JSON.stringify({
-        message: `Sube foto desde la web: ${filename}`,
-        content: base64,
-        branch: BRANCH,
-      }),
-    });
-    return filename;
-  }
-
-  // Aplica `editFn` (texto actual -> texto nuevo) sobre js/data.js con
-  // reintentos, por si dos personas suben/borran una foto casi a la vez.
-  async function editDataJs(editFn) {
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const current = await ghRequest(`/contents/js/data.js?ref=${BRANCH}`, { method: "GET" });
-      const text = base64ToUtf8(current.content);
-      const updated = editFn(text);
-      if (updated === null) return; // editFn señaliza "nada que hacer"
-      try {
-        await ghRequest("/contents/js/data.js", {
-          method: "PUT",
-          body: JSON.stringify({
-            message: "Actualiza data.js",
-            content: utf8ToBase64(updated),
-            sha: current.sha,
-            branch: BRANCH,
-          }),
-        });
-        return;
-      } catch (err) {
-        if (attempt === 2) throw err;
-        await new Promise((r) => setTimeout(r, 600));
-      }
-    }
-  }
-
-  function addEntryToDataJs(filename, categories, caption, newLabels) {
-    const catsJs = "[" + categories.map((c) => `"${c}"`).join(", ") + "]";
-    const safeCaption = caption.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-    const photoLine = `  { file: "${filename}", categories: ${catsJs}, caption: "${safeCaption}" },\n];`;
-    const labelEntries = Object.keys(newLabels || {});
-    return editDataJs((text) => {
-      let updated = text.replace(/\n\];/, "\n" + photoLine);
-      if (updated === text) throw new Error("No se pudo editar data.js (formato inesperado).");
-
-      if (labelEntries.length) {
-        const labelLines = labelEntries
-          .map((key) => `  ${key}: "${newLabels[key].replace(/\\/g, "\\\\").replace(/"/g, '\\"')}",\n`)
-          .join("");
-        const before = updated;
-        updated = updated.replace(/(CATEGORY_LABELS\s*=\s*\{[\s\S]*?)\n\};/, `$1\n${labelLines}};`);
-        if (updated === before) throw new Error("No se pudieron registrar las etiquetas nuevas.");
-      }
-      return updated;
-    });
-  }
-
-  function removeEntryFromDataJs(filename) {
-    // Cada foto ocupa una única línea (así las genera esta misma página y
-    // el resto del álbum), así que basta con quitar la línea que la cita.
-    const escaped = filename.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const lineRe = new RegExp(`^[ \\t]*\\{[^\\n]*file:\\s*"${escaped}"[^\\n]*\\},?\\n`, "m");
-    return editDataJs((text) => {
-      if (!lineRe.test(text)) return null;
-      return text.replace(lineRe, "");
-    });
-  }
-
   submitBtn.addEventListener("click", async () => {
     if (!selectedFile) {
       setStatus("Elige antes una foto.", "error");
       return;
     }
-    if (!getToken(false)) {
+    if (!GH.getToken(false)) {
       setStatus("Necesitas la clave de acceso para subir la foto.", "error");
       return;
     }
@@ -444,10 +325,10 @@
 
       setStatus("Subiendo la foto…");
       const base64 = await blobToBase64(blob);
-      const filename = await uploadImageFile(base64, ext);
+      const filename = await GH.uploadImageFile(base64, ext);
 
       setStatus("Añadiéndola al álbum…");
-      await addEntryToDataJs(filename, [...selectedCategories], captionEl.value.trim(), pendingNewLabels);
+      await GH.addEntryToDataJs(filename, [...selectedCategories], captionEl.value.trim(), pendingNewLabels);
       Object.keys(pendingNewLabels).forEach((k) => delete pendingNewLabels[k]);
 
       setStatus("¡Foto añadida! Ya está en el álbum (puede tardar un minuto en aparecer).", "ok");
@@ -494,7 +375,7 @@
   }
 
   async function deletePhoto(filename, itemEl, btnEl) {
-    if (!getToken(false)) {
+    if (!GH.getToken(false)) {
       manageStatus.textContent = "Necesitas la clave de acceso para eliminar fotos.";
       manageStatus.className = "status error";
       return;
@@ -507,18 +388,18 @@
     try {
       // 1) Quita primero la entrada de data.js, así la foto desaparece del
       //    álbum aunque falle el segundo paso.
-      await removeEntryFromDataJs(filename);
+      await GH.removeEntryFromDataJs(filename);
 
       // 2) Borra el archivo de la imagen (si esto falla, no pasa nada grave:
       //    solo queda un archivo huérfano sin usar).
       try {
-        const info = await ghRequest(`/contents/${filename}?ref=${BRANCH}`, { method: "GET" });
-        await ghRequest(`/contents/${filename}`, {
+        const info = await GH.ghRequest(`/contents/${filename}?ref=main`, { method: "GET" });
+        await GH.ghRequest(`/contents/${filename}`, {
           method: "DELETE",
           body: JSON.stringify({
             message: `Elimina foto: ${filename}`,
             sha: info.sha,
-            branch: BRANCH,
+            branch: "main",
           }),
         });
       } catch (imgErr) {

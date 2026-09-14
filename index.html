@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
 
@@ -34,7 +34,21 @@
 
 <a href="upload.html" class="fab" title="Añadir una foto">＋</a>
 
-<script src="js/data.js?v=4"></script>
-<script src="js/app.js?v=4"></script>
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
+  <div class="lightbox-polaroid" id="lightboxStop">
+    <img id="lightboxImg" src="" alt="">
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+    <div class="lightbox-caption-edit" id="lightboxCaptionEdit" hidden>
+      <input type="text" id="lightboxCaptionInput" maxlength="140" placeholder="Ej: En la boda de...">
+      <button id="lightboxCaptionSave">Guardar</button>
+    </div>
+    <button class="lightbox-edit-btn" id="lightboxEditBtn">✏️ Comentario</button>
+  </div>
+</div>
+
+<script src="js/data.js?v=6"></script>
+<script src="js/gh-edit.js?v=1"></script>
+<script src="js/app.js?v=6"></script>
 </body>
 </html>

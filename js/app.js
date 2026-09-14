@@ -3,7 +3,18 @@
   const filtersEl = document.getElementById("filters");
   const emptyState = document.getElementById("emptyState");
 
+  const lightbox = document.getElementById("lightbox");
+  const lightboxStop = document.getElementById("lightboxStop");
+  const lightboxClose = document.getElementById("lightboxClose");
+  const lightboxImg = document.getElementById("lightboxImg");
+  const lightboxCaption = document.getElementById("lightboxCaption");
+  const lightboxEditBtn = document.getElementById("lightboxEditBtn");
+  const lightboxCaptionEdit = document.getElementById("lightboxCaptionEdit");
+  const lightboxCaptionInput = document.getElementById("lightboxCaptionInput");
+  const lightboxCaptionSave = document.getElementById("lightboxCaptionSave");
+
   let activeFilter = "all";
+  let currentPhoto = null;
 
   const ROTATIONS = [-4, -2.5, -1, 1.5, 3, 4.5, -3.5, 2, -1.5, 0.5];
   const TAPE_COLORS = ["#c96a4d", "#8a9a63", "#d1a53d", "#7d8fa6"];
@@ -51,29 +62,83 @@
     );
 
     items.forEach((photo, i) => {
-      // Al hacer clic, la foto se abre a tamaño completo en una pestaña
-      // nueva (sin overlays ni ventanas emergentes en la propia página).
-      const link = document.createElement("a");
-      link.className = "photo-card";
-      link.href = photo.file;
-      link.target = "_blank";
-      link.rel = "noopener";
-      link.title = photo.caption || "";
-      link.style.setProperty("--rot", `${pick(ROTATIONS, i)}deg`);
-      link.style.setProperty("--tape-angle", `${pick(TAPE_ANGLES, i + 2)}deg`);
-      link.style.setProperty("--tape-color", pick(TAPE_COLORS, i));
+      const card = document.createElement("div");
+      card.className = "photo-card";
+      card.style.setProperty("--rot", `${pick(ROTATIONS, i)}deg`);
+      card.style.setProperty("--tape-angle", `${pick(TAPE_ANGLES, i + 2)}deg`);
+      card.style.setProperty("--tape-color", pick(TAPE_COLORS, i));
 
       const img = document.createElement("img");
       img.src = photo.file;
       img.alt = photo.caption || "";
       img.loading = "lazy";
-      link.appendChild(img);
-      grid.appendChild(link);
+      card.appendChild(img);
+      card.addEventListener("click", () => openLightbox(photo));
+      grid.appendChild(card);
     });
 
     emptyState.hidden = PHOTOS.length > 0;
     grid.hidden = PHOTOS.length === 0;
   }
+
+  // ---------- Visor con comentario ----------
+
+  function openLightbox(photo) {
+    currentPhoto = photo;
+    lightboxImg.src = photo.file;
+    lightboxImg.alt = photo.caption || "";
+    lightboxCaption.textContent = photo.caption || "";
+    lightboxCaptionEdit.hidden = true;
+    lightbox.classList.add("open");
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove("open");
+    lightboxCaptionEdit.hidden = true;
+    currentPhoto = null;
+  }
+
+  lightboxClose.addEventListener("click", closeLightbox);
+  // Clic fuera de la "polaroid" (en el fondo oscuro) cierra el visor.
+  lightbox.addEventListener("click", (e) => {
+    if (!lightboxStop.contains(e.target)) closeLightbox();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeLightbox();
+  });
+
+  lightboxEditBtn.addEventListener("click", () => {
+    if (!currentPhoto) return;
+    lightboxCaptionInput.value = currentPhoto.caption || "";
+    lightboxCaptionEdit.hidden = false;
+    lightboxCaptionInput.focus();
+  });
+
+  async function saveCaption() {
+    if (!currentPhoto) return;
+    const newCaption = lightboxCaptionInput.value.trim();
+    lightboxCaptionSave.disabled = true;
+    lightboxCaptionSave.textContent = "Guardando…";
+    try {
+      await GH.updateCaption(currentPhoto.file, newCaption);
+      currentPhoto.caption = newCaption;
+      lightboxCaption.textContent = newCaption;
+      lightboxCaptionEdit.hidden = true;
+    } catch (err) {
+      alert(err.message || "No se ha podido guardar el comentario. Inténtalo otra vez.");
+    } finally {
+      lightboxCaptionSave.disabled = false;
+      lightboxCaptionSave.textContent = "Guardar";
+    }
+  }
+
+  lightboxCaptionSave.addEventListener("click", saveCaption);
+  lightboxCaptionInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      saveCaption();
+    }
+  });
 
   buildFilters();
   renderGrid();
