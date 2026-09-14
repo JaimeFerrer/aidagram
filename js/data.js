@@ -99,6 +99,7 @@ const PHOTOS = [
   { file: "images/aida-86.jpg", categories: ["jametes", "papa"], caption: "" },
   { file: "images/aida-87.jpg", categories: ["papa"], caption: "" },
   { file: "images/aida-88.jpg", categories: ["papa"], caption: "" },
+  { file: "images/aida-89.jpg", categories: ["diego", "mama"], caption: "" },
 ];
 
 // Nombres bonitos para mostrar en los botones de filtro.
@@ -115,4 +116,5 @@ const CATEGORY_LABELS = {
   guelos: "Güelos",
   jametes: "Jametes",
   adri: "Adri",
+  diego: "Diego",
 };
