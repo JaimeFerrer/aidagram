@@ -176,7 +176,11 @@
   <a class="back" href="index.html">← Volver al álbum</a>
 </div>
 
-<script src="js/data.js?v=6"></script>
+<script>
+  // Igual que en index.html: carga data.js con un parámetro único cada
+  // vez, así las etiquetas y la lista de fotos están siempre al día.
+  document.write('<script src="js/data.js?t=' + Date.now() + '"><\/script>');
+</script>
 <script src="js/gh-edit.js?v=2"></script>
 <script>
 (function () {

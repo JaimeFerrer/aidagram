@@ -85,6 +85,7 @@
 </div>
 
 <a href="upload.html" class="fab" title="Añadir una foto">＋</a>
+<button type="button" class="fab fab-refresh" id="refreshBtn" title="Actualizar fotos">🔄</button>
 
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
@@ -99,13 +100,20 @@
   </div>
 </div>
 
-<script src="js/data.js?v=6"></script>
+<script>
+  // Carga data.js con un parámetro único cada vez (en vez de una versión
+  // fija) para que ni el navegador ni la CDN de GitHub Pages sirvan una
+  // copia antigua — importante sobre todo en la app instalada, donde no
+  // hay barra de dirección con la que forzar un recarga dura.
+  document.write('<script src="js/data.js?t=' + Date.now() + '"><\/script>');
+</script>
 <script src="js/gh-edit.js?v=2"></script>
-<script src="js/app.js?v=7"></script>
+<script src="js/app.js?v=8"></script>
 <script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
+  document.getElementById("refreshBtn").addEventListener("click", () => location.reload());
 </script>
 </body>
 </html>
