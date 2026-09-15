@@ -32,7 +32,7 @@ const PHOTOS = [
   { file: "images/aida-22.png", categories: ["mama"], caption: "" },
   { file: "images/aida-23.png", categories: ["moni"], caption: "" },
   { file: "images/aida-24.png", categories: ["guelos"], caption: "" },
-  { file: "images/aida-25.png", categories: ["guelos"], caption: "" },
+  { file: "images/aida-25.png", categories: ["guelos"], caption: "En la playa" },
   { file: "images/aida-26.png", categories: ["guelos"], caption: "" },
   { file: "images/aida-27.png", categories: ["moni"], caption: "" },
   { file: "images/aida-28.png", categories: ["moni"], caption: "" },
