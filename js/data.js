@@ -26,7 +26,7 @@ const PHOTOS = [
   { file: "images/aida-16.png", categories: ["moni"], caption: "" },
   { file: "images/aida-17.png", categories: ["moni"], caption: "" },
   { file: "images/aida-18.png", categories: ["mama"], caption: "" },
-  { file: "images/aida-19.png", categories: ["moni"], caption: "" },
+  { file: "images/aida-19.png", categories: ["moni"], caption: "Cristal" },
   { file: "images/aida-20.png", categories: ["tia"], caption: "" },
   { file: "images/aida-21.png", categories: ["mama"], caption: "" },
   { file: "images/aida-22.png", categories: ["mama"], caption: "" },
