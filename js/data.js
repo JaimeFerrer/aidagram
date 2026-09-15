@@ -88,7 +88,7 @@ const PHOTOS = [
   { file: "images/aida-75.jpg", categories: ["adri"], caption: "" },
   { file: "images/aida-76.jpg", categories: ["adri"], caption: "" },
   { file: "images/aida-77.jpg", categories: ["adri"], caption: "" },
-  { file: "images/aida-78.jpg", categories: ["adri"], caption: "" },
+  { file: "images/aida-78.jpg", categories: ["adri"], caption: "Guapooooosss" },
   { file: "images/aida-79.jpg", categories: ["adri"], caption: "" },
   { file: "images/aida-80.jpg", categories: ["adri"], caption: "" },
   { file: "images/aida-81.jpg", categories: ["adri"], caption: "" },
