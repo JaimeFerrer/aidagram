@@ -143,6 +143,70 @@
     }
   });
 
+  // ---------- Deslizar hacia abajo para refrescar ----------
+
+  const ptrIndicator = document.getElementById("ptrIndicator");
+  if (ptrIndicator) {
+    const THRESHOLD = 70; // px que hay que arrastrar para que se dispare
+    const MAX_PULL = 100;
+    let startY = null;
+    let dragging = false;
+    let pullAmount = 0;
+    let refreshing = false;
+
+    function applyPull(px, animated) {
+      pullAmount = px;
+      ptrIndicator.style.transition = animated ? "transform 0.25s ease, opacity 0.25s ease" : "none";
+      ptrIndicator.style.transform = `translate(-50%, ${px - 60}px)`;
+      ptrIndicator.style.opacity = String(Math.min(px / THRESHOLD, 1));
+    }
+
+    document.addEventListener(
+      "touchstart",
+      (e) => {
+        if (refreshing || lightbox.classList.contains("open")) return;
+        if ((document.scrollingElement || document.documentElement).scrollTop > 0) return;
+        startY = e.touches[0].clientY;
+        dragging = true;
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      "touchmove",
+      (e) => {
+        if (!dragging || startY === null) return;
+        const delta = e.touches[0].clientY - startY;
+        if (delta <= 0) {
+          applyPull(0, false);
+          return;
+        }
+        // Evita que la página haga scroll/rebote a la vez que arrastramos.
+        if (e.cancelable) e.preventDefault();
+        applyPull(Math.min(delta * 0.5, MAX_PULL), false);
+      },
+      { passive: false }
+    );
+
+    function endPull() {
+      if (!dragging) return;
+      dragging = false;
+      startY = null;
+      if (pullAmount >= THRESHOLD) {
+        refreshing = true;
+        ptrIndicator.textContent = "🔄";
+        ptrIndicator.classList.add("ptr-spin");
+        applyPull(THRESHOLD, true);
+        setTimeout(() => location.reload(), 350);
+      } else {
+        applyPull(0, true);
+      }
+    }
+
+    document.addEventListener("touchend", endPull);
+    document.addEventListener("touchcancel", endPull);
+  }
+
   buildFilters();
   renderGrid();
 })();

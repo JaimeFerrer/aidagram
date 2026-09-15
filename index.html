@@ -22,6 +22,8 @@
 </head>
 <body>
 
+<div class="ptr-indicator" id="ptrIndicator">↓</div>
+
 <header class="cover">
   <div class="cover-brand">
     <svg class="insta-badge" viewBox="0 0 120 120" role="img" aria-label="Cámara retro con la inicial de Aída">
@@ -107,7 +109,7 @@
   document.write('<script src="js/data.js?t=' + Date.now() + '"><\/script>');
 </script>
 <script src="js/gh-edit.js?v=2"></script>
-<script src="js/app.js?v=8"></script>
+<script src="js/app.js?v=9"></script>
 <script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
