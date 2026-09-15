@@ -85,7 +85,6 @@
 </div>
 
 <a href="upload.html" class="fab" title="Añadir una foto">＋</a>
-<button type="button" class="fab fab-refresh" id="refreshBtn" title="Actualizar fotos">🔄</button>
 
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
@@ -113,7 +112,6 @@
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
-  document.getElementById("refreshBtn").addEventListener("click", () => location.reload());
 </script>
 </body>
 </html>

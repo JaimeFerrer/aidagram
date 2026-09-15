@@ -209,17 +209,6 @@ body {
   transform: scale(1.06);
 }
 
-.fab-refresh {
-  right: auto;
-  left: 20px;
-  width: 48px;
-  height: 48px;
-  font-size: 1.3rem;
-  background: var(--card-bg);
-  color: var(--ink);
-  cursor: pointer;
-}
-
 /* ---------- Visor de foto (lightbox) ---------- */
 /* Visibilidad controlada SOLO por la clase .open (nunca por [hidden]
    + display, para evitar que una regla propia gane por especificidad
