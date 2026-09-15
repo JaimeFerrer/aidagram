@@ -63,7 +63,6 @@ const PHOTOS = [
   { file: "images/aida-51.png", categories: ["jametes"], caption: "" },
   { file: "images/aida-52.png", categories: ["moni"], caption: "" },
   { file: "images/aida-53.png", categories: ["moni"], caption: "" },
-  { file: "images/aida-54.png", categories: ["mama"], caption: "" },
   { file: "images/aida-55.png", categories: ["mama"], caption: "" },
   { file: "images/aida-57.png", categories: ["mama"], caption: "" },
   { file: "images/aida-58.png", categories: ["jametes"], caption: "" },
