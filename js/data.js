@@ -111,7 +111,7 @@ const PHOTOS = [
   { file: "images/aida-98.jpg", categories: ["diego"], caption: "" },
   { file: "images/aida-99.jpg", categories: ["diego"], caption: "" },
   { file: "images/aida-100.jpg", categories: ["diego"], caption: "" },
-  { file: "images/aida-101.jpg", categories: ["guelos"], caption: "" },
+  { file: "images/aida-101.jpg", categories: ["guelos"], caption: "Oza" },
   { file: "images/aida-102.jpg", categories: ["tia", "diego"], caption: "" },
   { file: "images/aida-103.jpg", categories: ["tia"], caption: "" },
   { file: "images/aida-104.jpg", categories: ["tia"], caption: "" },
