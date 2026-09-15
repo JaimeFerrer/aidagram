@@ -120,6 +120,7 @@ const PHOTOS = [
   { file: "images/aida-107.jpg", categories: ["guelos", "tia", "mama", "diego"], caption: "" },
   { file: "images/upload-1789477165736.jpg", categories: ["jametes"], caption: "Prueba" },
   { file: "images/upload-1789477222680.jpg", categories: ["jametes"], caption: "" },
+  { file: "images/upload-1789477271653.jpg", categories: ["jametes"], caption: "" },
 ];
 
 // Nombres bonitos para mostrar en los botones de filtro.
