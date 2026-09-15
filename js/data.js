@@ -14,7 +14,7 @@
 const PHOTOS = [
   // --- Primera tanda ---
   { file: "images/aida-06.png", categories: ["papa", "mama"], caption: "" },
-  { file: "images/aida-07.png", categories: ["papa"], caption: "" },
+  { file: "images/aida-07.png", categories: ["papa"], caption: "La moñi" },
   { file: "images/aida-08.png", categories: ["tia"], caption: "" },
   { file: "images/aida-09.png", categories: ["mama"], caption: "" },
   { file: "images/aida-10.png", categories: ["moni"], caption: "" },
