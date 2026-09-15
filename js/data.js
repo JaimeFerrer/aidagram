@@ -44,7 +44,7 @@ const PHOTOS = [
   { file: "images/aida-34.png", categories: ["moni"], caption: "" },
   { file: "images/aida-35.png", categories: ["guelos"], caption: "" },
   { file: "images/aida-36.png", categories: ["jametes"], caption: "" },
-  { file: "images/aida-37.png", categories: ["jametes"], caption: "" },
+  { file: "images/aida-37.png", categories: ["jametes"], caption: "Pesadilla" },
   { file: "images/aida-38.png", categories: ["jametes"], caption: "" },
   { file: "images/aida-39.png", categories: ["jametes", "tia", "guelos"], caption: "" },
   { file: "images/aida-40.png", categories: ["jametes", "mama"], caption: "" },
