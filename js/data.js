@@ -17,7 +17,7 @@ const PHOTOS = [
   { file: "images/aida-07.png", categories: ["papa"], caption: "La moñi" },
   { file: "images/aida-08.png", categories: ["tia"], caption: "" },
   { file: "images/aida-09.png", categories: ["mama"], caption: "Pececito" },
-  { file: "images/aida-10.png", categories: ["moni"], caption: "" },
+  { file: "images/aida-10.png", categories: ["moni"], caption: "Bomboncito" },
   { file: "images/aida-11.png", categories: ["moni"], caption: "" },
   { file: "images/aida-12.png", categories: ["moni"], caption: "" },
   { file: "images/aida-13.png", categories: ["moni"], caption: "" },
